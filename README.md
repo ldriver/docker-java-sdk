@@ -1,6 +1,6 @@
 # Docker SDK for Java
-[![JDK](https://img.shields.io/badge/java-SE8-blue.svg)](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 
-[![Code Style](https://img.shields.io/badge/codestyle-google-blue.svg)](https://google.github.io/styleguide/javaguide.html)
+[![JDK](https://img.shields.io/badge/java-SE8-blue.svg)](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) [![Code Style](https://img.shields.io/badge/codestyle-google-blue.svg)](https://google.github.io/styleguide/javaguide.html)
+
 Docker SDK for Java 8.
 
 ## Authors
