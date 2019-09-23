@@ -1,16 +1,68 @@
-plugins {
-  id 'java'
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
+  }
 }
 
 group 'io.github.manuelkollus'
 version '1.0'
 
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.google.protobuf'
+
 sourceCompatibility = 1.8
 
+configurations {
+  included
+}
+
 repositories {
+  google()
   mavenCentral()
+  mavenLocal()
 }
 
 dependencies {
-  testCompile group: 'junit', name: 'junit', version: '4.12'
+  implementation 'com.google.protobuf:protobuf-java:3.5.1'
+  implementation 'com.google.guava:guava:28.0-jre'
+  testImplementation 'junit:junit:4.12'
+
+  configurations.implementation.extendsFrom(configurations.included)
+}
+
+sourceSets {
+  main {
+    proto {
+      srcDir 'src/main/protobuf'
+    }
+    java {
+      srcDirs = ['src/main/java',
+                 "${buildDir}/generated/source/proto/main/java"]
+    }
+  }
+  test {
+    proto {
+      srcDir 'src/test/java'
+    }
+  }
+}
+
+protobuf {
+  protoc {
+    artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
+  }
+  generateProtoTasks {
+    ofSourceSet('main')
+  }
+}
+
+jar {
+  from {
+    configurations.included.collect { it.isDirectory() ? it : zipTree(it) }
+  }
 }
