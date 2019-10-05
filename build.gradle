@@ -30,6 +30,9 @@ repositories {
 dependencies {
   implementation 'com.google.protobuf:protobuf-java:3.5.1'
   implementation 'com.google.guava:guava:28.0-jre'
+
+  implementation 'com.google.inject:guice:4.0'
+  
   testImplementation 'junit:junit:4.12'
 
   configurations.implementation.extendsFrom(configurations.included)
