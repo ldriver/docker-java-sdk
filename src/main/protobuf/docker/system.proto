@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package docker;
+
+option java_package = "io.github.manuelkollus.docker.system";
+option java_multiple_files = true;
+
+message Info {
+  string architecture = 1;
+  string clusterStore = 2;
+  string c_group_driver = 3;
+  int32 containers = 4;
+  int32 containers_running = 5;
+  int32 containers_stopped = 6;
+  bool cpu_cfs_period = 7;
+  bool cpu_cfs_quota = 8;
+  bool debug = 9;
+  string docker_root_dir = 10;
+  string driver = 11;
+  DriverStatus driver_status = 12;
+  bool experimental_build = 13;
+  string http_proxy = 14;
+  string https_proxy = 15;
+  string id = 16;
+  bool ipv4_forwarding = 17;
+  int32 images = 18;
+  string index_server_address = 19;
+  string init_path = 20;
+  string init_sha1 = 21;
+  bool kernel_memory = 22;
+  string kernel_version = 23;
+  Labels labels = 24;
+  int64 mem_total = 25;
+  bool memory_limit = 26;
+  int32 n_cpu = 27;
+  int32 n_events_listener = 28;
+  int32 n_fd = 29;
+  int32 n_goroutines = 30;
+  string name = 31;
+  string no_proxy = 32;
+  bool oom_kill_disable = 33;
+  string os_type = 34;
+  string operating_system = 35;
+  Plugins plugins = 36;
+  //TODO: Improve RegistryConfig and SecurityOptions
+}
+
+message Plugins {
+  repeated string volume = 1;
+  repeated string network = 2;
+}
+
+message DriverStatus {
+  repeated string status = 1;
+}
+
+message Labels {
+  repeated string label = 1;
+}
+
+message Version {
+  string version = 1;
+  string os = 2;
+  string kernel_version = 3;
+  string go_version = 4;
+  string git_commit = 5;
+  string arch = 6;
+  string api_version = 7;
+  string min_api_version = 8;
+  string build_time = 9;
+  bool experimental = 10;
+}
