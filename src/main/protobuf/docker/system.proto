@@ -58,7 +58,7 @@ message Labels {
   repeated string label = 1;
 }
 
-message Version {
+message SystemVersion {
   string version = 1;
   string os = 2;
   string kernel_version = 3;
