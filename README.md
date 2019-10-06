@@ -11,7 +11,7 @@ See also the list of [contributors](https://github.com/manuelkollus/docker-java-
 ## Download
 Download the latest JAR 
 
-#### gradle
+#### Gradle
 ```groovy
 compile 'io.github.manuelkollus:docker-java-sdk:1.0'
 ```
