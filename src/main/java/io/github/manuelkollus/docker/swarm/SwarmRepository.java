@@ -36,7 +36,7 @@ public final class SwarmRepository {
     Swarm swarm = inspectBlocking(encodedString);
     if (swarm == null) {
       String errorMessage = "Cannot find or parse to " + Swarm.class.getName();
-      future.completeExceptionally(SwarmException.withMessage(errorMessage));
+      future.completeExceptionally(NoSuchSwarmException.withMessage(errorMessage));
       return;
     }
     future.complete(swarm);
