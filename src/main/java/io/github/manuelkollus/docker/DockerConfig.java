@@ -1,35 +1,57 @@
 package io.github.manuelkollus.docker;
 
 import java.util.Objects;
+import org.apache.http.auth.UsernamePasswordCredentials;
 
 public final class DockerConfig {
   private KeyPath keyPath;
+  private UsernamePasswordCredentials credentials;
 
-  private DockerConfig(KeyPath keyPath) {
+  private DockerConfig() {}
+
+  private DockerConfig(
+    KeyPath keyPath,
+    UsernamePasswordCredentials credentials
+  ) {
     this.keyPath = keyPath;
+    this.credentials =credentials;
   }
 
   public KeyPath keyPath() {
     return this.keyPath;
   }
 
+  public UsernamePasswordCredentials credentials() {
+    return this.credentials;
+  }
+
   public static DockerConfig.Builder newBuilder() {
-    return new DockerConfig.Builder();
+    return new DockerConfig.Builder(new DockerConfig());
   }
 
   public static final class Builder {
-    private KeyPath keyPath;
+    private DockerConfig prototype;
 
-    private Builder() {}
+    private Builder(DockerConfig prototype) {
+      this.prototype = prototype;
+    }
 
     public Builder withKeyPath(KeyPath keyPath) {
-      this.keyPath = keyPath;
+      Objects.requireNonNull(keyPath);
+      this.prototype.keyPath = keyPath;
       return this;
     }
 
+    public Builder withCredentials(UsernamePasswordCredentials credentials) {
+      Objects.requireNonNull(credentials);
+      this.prototype.credentials = credentials;
+      return this;
+    }
     public DockerConfig create() {
-      Objects.requireNonNull(keyPath);
-      return new DockerConfig(keyPath);
+      return new DockerConfig(
+        prototype.keyPath,
+        prototype.credentials
+      );
     }
   }
 }

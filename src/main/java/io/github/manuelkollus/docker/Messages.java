@@ -1,4 +1,4 @@
-package io.github.manuelkollus.docker.util;
+package io.github.manuelkollus.docker;
 
 import java.util.Map;
 import java.util.Objects;
