@@ -3,7 +3,6 @@ package io.github.manuelkollus.docker;
 import com.google.common.base.Preconditions;
 
 public final class DelimitedKeyPath implements KeyPath {
-
   private String delimiter;
   private String path;
 

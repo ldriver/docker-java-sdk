@@ -5,12 +5,10 @@ package docker;
 option java_package = "io.github.manuelkollus.docker.swarm";
 option java_multiple_files = true;
 
-import "google/protobuf/timestamp.proto";
-
 message Swarm {
   string id = 1;
-  google.protobuf.Timestamp createdAt = 2;
-  google.protobuf.Timestamp updatedAt = 3;
+  Timestamp createdAt = 2;
+  Timestamp updatedAt = 3;
   SwarmSpec spec = 4;
   JoinTokens join_tokens = 5;
   Version version = 6;
@@ -66,4 +64,7 @@ message TLSInfo {
   string trust_root = 1;
   string cert_issuer_subject = 2;
   string cert_issuer_public_key = 3;
+}
+
+message Timestamp {
 }
