@@ -7,6 +7,7 @@ import com.googlecode.protobuf.format.JsonFormat.ParseException;
 import io.github.manuelkollus.docker.DockerConfig;
 import io.github.manuelkollus.docker.HttpRequests;
 import io.github.manuelkollus.docker.KeyPath;
+import io.github.manuelkollus.docker.Message;
 import io.github.manuelkollus.docker.Messages;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -39,8 +40,8 @@ public final class SwarmRepository {
 
   private void inspectAndComplete(CompletableFuture<Swarm> future) {
     KeyPath keyPath = dockerConfig.keyPath().subPath("swarm");
-    String encodedString = HttpRequests.get(client, keyPath);
-    Swarm swarm = inspectBlocking(encodedString);
+    String encodeString = HttpRequests.get(client, keyPath);
+    Swarm swarm = inspectBlocking(encodeString);
     if (swarm == null) {
       String errorMessage = "Cannot find or parse to " + Swarm.class.getName();
       future.completeExceptionally(NoSuchSwarmException.withMessage(errorMessage));
@@ -50,9 +51,8 @@ public final class SwarmRepository {
   }
 
   @Nullable
-  private Swarm inspectBlocking(String encodedString) {
-    Messages message = Messages.of(
-      encodedString, SwarmReplacementPattern.patterns());
+  private Swarm inspectBlocking(String encodeString) {
+    Message message = Messages.of(encodeString, SwarmReplacePattern.patterns());
     Swarm.Builder builder = Swarm.newBuilder();
     try {
       format.merge(

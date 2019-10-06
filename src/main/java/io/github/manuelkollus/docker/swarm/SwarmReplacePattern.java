@@ -3,12 +3,12 @@ package io.github.manuelkollus.docker.swarm;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class SwarmReplacementPattern {
+public final class SwarmReplacePattern {
   private static final class Lazy {
     private static final Map<String, String> PATTERNS = collectPatterns();
   }
 
-  private SwarmReplacementPattern() {}
+  private SwarmReplacePattern() {}
 
   private static Map<String, String> collectPatterns() {
     Map<String, String> patterns = new HashMap<>();

@@ -3,7 +3,7 @@ package io.github.manuelkollus.docker;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Messages {
+public final class Messages implements Message{
   private String message;
   private Map<String, String> patterns;
 
@@ -15,6 +15,7 @@ public final class Messages {
     this.patterns = patterns;
   }
 
+  @Override
   public String message() {
     for (Map.Entry<String, String> entry : patterns.entrySet()) {
       message = message.replace(entry.getKey(), entry.getValue());
