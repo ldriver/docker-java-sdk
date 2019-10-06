@@ -16,8 +16,7 @@ public final class HttpRequests {
     try {
       HttpResponse response = client.execute(request);
       InputStream inputStream = response.getEntity().getContent();
-      return StringEncodings.convertFromInputStream(
-        inputStream, StandardCharsets.UTF_8);
+      return StringEncodings.encodeUtf8(inputStream, StandardCharsets.UTF_8);
     } catch (IOException httpExecutionFailure) {
       httpExecutionFailure.printStackTrace();
     }

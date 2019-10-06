@@ -8,7 +8,6 @@ import io.github.manuelkollus.docker.DockerConfig;
 import io.github.manuelkollus.docker.HttpRequests;
 import io.github.manuelkollus.docker.KeyPath;
 import io.github.manuelkollus.docker.Messages;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
@@ -52,7 +51,8 @@ public final class SwarmRepository {
 
   @Nullable
   private Swarm inspectBlocking(String encodedString) {
-    Messages message = Messages.of(encodedString, new HashMap<>());
+    Messages message = Messages.of(
+      encodedString, SwarmReplacementPattern.patterns());
     Swarm.Builder builder = Swarm.newBuilder();
     try {
       format.merge(

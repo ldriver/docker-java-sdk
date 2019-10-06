@@ -18,10 +18,7 @@ public final class StringEncodings {
     return new String(buffer, Charsets.UTF_8);
   }
 
-  public static String convertFromInputStream(
-    InputStream inputStream,
-    Charset charset
-  ) {
+  public static String encodeUtf8(InputStream inputStream, Charset charset) {
     try {
       return CharStreams.toString(new InputStreamReader(inputStream, charset));
     } catch (IOException convertFailure) {
