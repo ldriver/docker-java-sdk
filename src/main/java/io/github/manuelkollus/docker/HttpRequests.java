@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -12,10 +13,32 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 
 public final class HttpRequests {
-  private HttpRequests() {
+  public static final class Response {
+    private String content;
+    private int code;
+
+    private Response(String content, int code) {
+      this.content = content;
+      this.code = code;
+    }
+
+    public String content() {
+      return this.content;
+    }
+
+    public int code() {
+      return this.code;
+    }
+
+    public static Response create(String content, int code) {
+      Objects.requireNonNull(content);
+      return new Response(content, code);
+    }
   }
 
-  public static String post(
+  private HttpRequests() {}
+
+  public static Response post(
     HttpClient client,
     KeyPath path,
     String body
@@ -32,20 +55,22 @@ public final class HttpRequests {
     return null;
   }
 
-  public static String get(HttpClient client, KeyPath path) {
+  public static Response get(HttpClient client, KeyPath path) {
     HttpGet request = new HttpGet(path.value());
     request.addHeader("accept", "application/json");
     return executeRequest(client, request);
   }
 
-  private static String executeRequest(
+  private static Response executeRequest(
     HttpClient client,
     HttpUriRequest request
   ) {
     try {
       HttpResponse response = client.execute(request);
       InputStream inputStream = response.getEntity().getContent();
-      return StringEncodings.encodeUtf8(inputStream, StandardCharsets.UTF_8);
+      String content = StringEncodings.encodeUtf8(
+        inputStream, StandardCharsets.UTF_8);
+      return Response.create(content, response.getStatusLine().getStatusCode());
     } catch (IOException httpExecutionFailure) {
       httpExecutionFailure.printStackTrace();
     }
