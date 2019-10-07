@@ -14,7 +14,7 @@ public final class DockerConfig {
     UsernamePasswordCredentials credentials
   ) {
     this.keyPath = keyPath;
-    this.credentials =credentials;
+    this.credentials = credentials;
   }
 
   public KeyPath keyPath() {
@@ -36,9 +36,9 @@ public final class DockerConfig {
       this.prototype = prototype;
     }
 
-    public Builder withKeyPath(KeyPath keyPath) {
+    public Builder withKeyPath(String keyPath) {
       Objects.requireNonNull(keyPath);
-      this.prototype.keyPath = keyPath;
+      this.prototype.keyPath = DelimitedKeyPath.create("/", keyPath);
       return this;
     }
 
@@ -47,6 +47,7 @@ public final class DockerConfig {
       this.prototype.credentials = credentials;
       return this;
     }
+
     public DockerConfig create() {
       return new DockerConfig(
         prototype.keyPath,
