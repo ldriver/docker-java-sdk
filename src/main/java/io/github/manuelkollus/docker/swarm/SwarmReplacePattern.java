@@ -14,6 +14,9 @@ public final class SwarmReplacePattern {
     Map<String, String> patterns = new HashMap<>();
     patterns.put("createdAt", "CreatedAt");
     patterns.put("spec", "Spec");
+    patterns.put("listenAddress", "ListenAddr");
+    patterns.put("advertiseAddress", "AdvertiseAddr");
+    patterns.put("forceNewCluster", "ForceNewCluster");
     patterns.put("heartbeatPeriod", "HeartbeatPeriod");
     patterns.put("orchestration", "Orchestration");
     patterns.put("taskHistoryRetentionLimit", "TaskHistoryRetentionLimit");
