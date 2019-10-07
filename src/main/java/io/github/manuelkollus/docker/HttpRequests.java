@@ -1,9 +1,12 @@
 package io.github.manuelkollus.docker;
 
+import com.google.protobuf.GeneratedMessage;
+import com.googlecode.protobuf.format.JsonFormat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -36,7 +39,8 @@ public final class HttpRequests {
     }
   }
 
-  private HttpRequests() {}
+  private HttpRequests() {
+  }
 
   public static Response post(
     HttpClient client,
@@ -53,6 +57,18 @@ public final class HttpRequests {
       encodingFailure.printStackTrace();
     }
     return null;
+  }
+
+  public static Response post(
+    HttpClient client,
+    KeyPath path,
+    GeneratedMessage message,
+    Map<String, String> patterns
+  ) {
+    return post(
+      client,
+      path,
+      formatGeneratedMessageToJson(message, patterns));
   }
 
   public static Response get(HttpClient client, KeyPath path) {
@@ -75,5 +91,14 @@ public final class HttpRequests {
       httpExecutionFailure.printStackTrace();
     }
     return null;
+  }
+
+  private static final JsonFormat FORMAT = new JsonFormat();
+
+  private static String formatGeneratedMessageToJson(
+    GeneratedMessage generatedMessage, Map<String, String> patterns) {
+    String encodeString = FORMAT.printToString(generatedMessage);
+    Message message = Messages.of(encodeString, patterns);
+    return message.message();
   }
 }

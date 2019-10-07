@@ -3,7 +3,6 @@ package io.github.manuelkollus.docker;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.googlecode.protobuf.format.JsonFormat;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -33,17 +32,10 @@ public final class InjectModule extends AbstractModule {
     return Executors.newFixedThreadPool(GLOBAL_FALLBACK_EXECUTOR_SIZE);
   }
 
-
   @Provides
   @Singleton
   KeyPath createGlobalKeyPath() {
     return this.config.keyPath();
-  }
-
-  @Provides
-  @Singleton
-  JsonFormat createGlobalJsonFormat() {
-    return new JsonFormat();
   }
 
   @Provides

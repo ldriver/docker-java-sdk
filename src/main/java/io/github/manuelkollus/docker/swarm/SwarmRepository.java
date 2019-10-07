@@ -2,7 +2,6 @@ package io.github.manuelkollus.docker.swarm;
 
 import com.google.inject.Inject;
 import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.GeneratedMessage;
 import com.googlecode.protobuf.format.JsonFormat;
 import com.googlecode.protobuf.format.JsonFormat.ParseException;
 import io.github.manuelkollus.docker.HttpRequests;
@@ -41,37 +40,24 @@ public final class SwarmRepository {
   }
 
   private void initializeAndComplete(
-    SwarmInit swarmInit,
-    CompletableFuture<String> future
-  ) {
-    String encodeString = formatGeneratedMessageToJson(swarmInit);
-    Response response = initializeBlocking(encodeString);
-    validateInitialRequestStatusCode(response, future);
-    validateInitialBlockingResponseConsistency(response.content(), future);
+    SwarmInit swarmInit, CompletableFuture<String> future) {
+    Response response = initializeBlocking(swarmInit);
+    checkInitialRequestStatusCode(response, future);
+    future.complete(response.content());
   }
 
-  private Response initializeBlocking(String encodeString) {
-    KeyPath initializePath = path.subPath("init");
+  private Response initializeBlocking(SwarmInit swarmInit) {
+    KeyPath path = this.path.subPath("init");
     return HttpRequests.post(
-      client, initializePath, encodeString);
+      client,
+      path,
+      swarmInit,
+      SwarmReplacePattern.patterns()
+    );
   }
 
-  private void validateInitialBlockingResponseConsistency(
-    String blockingResponse,
-    CompletableFuture<String> future) {
-    if (blockingResponse == null) {
-      String errorMessage = "Cannot initialize the Swarm";
-      future.completeExceptionally(
-        SwarmInitializationException.withMessage(errorMessage));
-      return;
-    }
-    future.complete(blockingResponse);
-  }
-
-  private void validateInitialRequestStatusCode(
-    Response response,
-    CompletableFuture<String> future
-  ) {
+  private void checkInitialRequestStatusCode(
+    Response response, CompletableFuture<String> future) {
     if (isRequestFailed(response.code())) {
       String errorMessage = "The initial request could not be executed the"
         + " status code is {0}";
@@ -111,13 +97,6 @@ public final class SwarmRepository {
       swarmParseFailure.printStackTrace();
     }
     return builder.build();
-  }
-
-  private String formatGeneratedMessageToJson(
-    GeneratedMessage generatedMessage) {
-    String encodeString = format.printToString(generatedMessage);
-    Message message = Messages.of(encodeString, SwarmReplacePattern.patterns());
-    return message.message();
   }
 
   private static final int BAD_PARAMETER = 400;
