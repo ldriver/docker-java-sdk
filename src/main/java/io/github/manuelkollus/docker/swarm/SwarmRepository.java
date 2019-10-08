@@ -1,36 +1,35 @@
 package io.github.manuelkollus.docker.swarm;
 
 import com.google.inject.Inject;
-import com.google.protobuf.ExtensionRegistry;
-import com.googlecode.protobuf.format.JsonFormat;
-import com.googlecode.protobuf.format.JsonFormat.ParseException;
-import io.github.manuelkollus.docker.HttpRequests;
-import io.github.manuelkollus.docker.HttpRequests.Response;
-import io.github.manuelkollus.docker.KeyPath;
-import io.github.manuelkollus.docker.Message;
-import io.github.manuelkollus.docker.Messages;
+import io.github.manuelkollus.docker.util.KeyPath;
+import io.github.manuelkollus.docker.util.StringEncodings;
+import io.github.manuelkollus.docker.util.http.HttpClients;
+import io.github.manuelkollus.docker.util.http.Response;
+import io.github.manuelkollus.docker.util.protobuf.MessageReader;
+import io.github.manuelkollus.docker.util.protobuf.Patterns;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
-import org.apache.http.client.HttpClient;
 
 public final class SwarmRepository {
   private KeyPath path;
   private Executor executor;
-  private JsonFormat format;
-  private HttpClient client;
+  private HttpClients client;
+  private MessageReader reader;
 
   @Inject
   private SwarmRepository(
     KeyPath path,
     Executor executor,
-    JsonFormat format,
-    HttpClient client
+    HttpClients client,
+    MessageReader reader
   ) {
     this.path = path.subPath("swarm");
     this.executor = executor;
-    this.format = format;
     this.client = client;
+    this.reader = reader;
   }
 
   public CompletableFuture<String> initializeSwarm(SwarmInit swarmInit) {
@@ -43,16 +42,16 @@ public final class SwarmRepository {
     SwarmInit swarmInit, CompletableFuture<String> future) {
     Response response = initializeBlocking(swarmInit);
     checkInitialRequestStatusCode(response, future);
-    future.complete(response.content());
+    String content = StringEncodings.encodeUtf8(response.content());
+    future.complete(content);
   }
 
   private Response initializeBlocking(SwarmInit swarmInit) {
     KeyPath path = this.path.subPath("init");
-    return HttpRequests.post(
-      client,
+    return client.post(
       path,
       swarmInit,
-      SwarmReplacePattern.patterns()
+      Patterns.newBuilder().create()
     );
   }
 
@@ -60,9 +59,8 @@ public final class SwarmRepository {
     Response response, CompletableFuture<String> future) {
     if (isRequestFailed(response.code())) {
       String errorMessage = "The initial request could not be executed the"
-        + " status code is {0}";
-      future.completeExceptionally(SwarmInitializationException
-        .withMessage(String.format(errorMessage, response.code())));
+        + " status code is " + response.code();
+      future.completeExceptionally(SwarmException.withMessage(errorMessage));
     }
   }
 
@@ -73,28 +71,22 @@ public final class SwarmRepository {
   }
 
   private void inspectAndComplete(CompletableFuture<Swarm> future) {
-    Response response = HttpRequests.get(client, path);
+    Response response = client.get(path);
     Swarm swarm = inspectBlocking(response.content());
-    if (swarm == null) {
-      String errorMessage = "Cannot find or parse to " + Swarm.class.getName();
-      future.completeExceptionally(
-        NoSuchSwarmException.withMessage(errorMessage));
-      return;
-    }
     future.complete(swarm);
   }
 
   @Nullable
-  private Swarm inspectBlocking(String encodeString) {
-    Message message = Messages.of(encodeString, SwarmReplacePattern.patterns());
+  private Swarm inspectBlocking(InputStream content) {
     Swarm.Builder builder = Swarm.newBuilder();
     try {
-      format.merge(
-        message.message(),
-        ExtensionRegistry.getEmptyRegistry(),
-        builder);
-    } catch (ParseException swarmParseFailure) {
-      swarmParseFailure.printStackTrace();
+      reader.readMessage(
+        content,
+        builder,
+        Patterns.newBuilder().create()
+      );
+    } catch (IOException readFailure) {
+      readFailure.printStackTrace();
     }
     return builder.build();
   }

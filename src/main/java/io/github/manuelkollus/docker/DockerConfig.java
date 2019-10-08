@@ -1,5 +1,7 @@
 package io.github.manuelkollus.docker;
 
+import io.github.manuelkollus.docker.util.DelimitedKeyPath;
+import io.github.manuelkollus.docker.util.KeyPath;
 import java.util.Objects;
 import org.apache.http.auth.UsernamePasswordCredentials;
 
@@ -10,9 +12,7 @@ public final class DockerConfig {
   private DockerConfig() {}
 
   private DockerConfig(
-    KeyPath keyPath,
-    UsernamePasswordCredentials credentials
-  ) {
+    KeyPath keyPath, UsernamePasswordCredentials credentials) {
     this.keyPath = keyPath;
     this.credentials = credentials;
   }

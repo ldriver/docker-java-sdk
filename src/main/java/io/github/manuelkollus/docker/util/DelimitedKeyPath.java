@@ -1,4 +1,4 @@
-package io.github.manuelkollus.docker;
+package io.github.manuelkollus.docker.util;
 
 import com.google.common.base.Preconditions;
 

@@ -3,6 +3,10 @@ package io.github.manuelkollus.docker;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.googlecode.protobuf.format.JsonFormat;
+import io.github.manuelkollus.docker.util.KeyPath;
+import io.github.manuelkollus.docker.util.protobuf.MessageReader;
+import io.github.manuelkollus.docker.util.protobuf.MessageWriter;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -13,18 +17,20 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 public final class InjectModule extends AbstractModule {
-  private static final int GLOBAL_FALLBACK_EXECUTOR_SIZE = 2;
-
+  private JsonFormat format;
   private DockerConfig config;
 
   private InjectModule(DockerConfig config) {
     this.config = config;
+    this.format = new JsonFormat();
   }
 
   @Override
   protected void configure() {
     bind(DockerConfig.class).toInstance(config);
   }
+
+  private static final int GLOBAL_FALLBACK_EXECUTOR_SIZE = 2;
 
   @Provides
   @Singleton
@@ -36,6 +42,18 @@ public final class InjectModule extends AbstractModule {
   @Singleton
   KeyPath createGlobalKeyPath() {
     return this.config.keyPath();
+  }
+
+  @Provides
+  @Singleton
+  MessageWriter createGlobalMessageWriter() {
+    return MessageWriter.create(format);
+  }
+
+  @Provides
+  @Singleton
+  MessageReader createGlobalMessageReader() {
+    return MessageReader.create(format);
   }
 
   @Provides
