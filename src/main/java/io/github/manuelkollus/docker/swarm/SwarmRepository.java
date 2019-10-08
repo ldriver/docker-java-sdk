@@ -7,7 +7,6 @@ import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.MessageReader;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -79,15 +78,11 @@ public final class SwarmRepository {
   @Nullable
   private Swarm inspectBlocking(InputStream content) {
     Swarm.Builder builder = Swarm.newBuilder();
-    try {
-      reader.readMessage(
-        content,
-        builder,
-        Patterns.newBuilder().create()
-      );
-    } catch (IOException readFailure) {
-      readFailure.printStackTrace();
-    }
+    reader.readMessage(
+      content,
+      builder,
+      Patterns.newBuilder().create()
+    );
     return builder.build();
   }
 
