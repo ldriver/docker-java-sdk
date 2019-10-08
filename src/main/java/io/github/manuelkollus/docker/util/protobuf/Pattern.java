@@ -18,7 +18,6 @@ public final class Pattern {
     return text;
   }
 
-
   public static Pattern create(String key, String value) {
     return new Pattern("\"" + key + "\"", "\"" + value + "\"");
   }
