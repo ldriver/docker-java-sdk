@@ -1,12 +1,12 @@
 package io.github.manuelkollus.docker.util.http;
 
+import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.protobuf.GeneratedMessage;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.protobuf.MessageWriter;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -68,12 +68,7 @@ public final class HttpClients {
     if (isNullOrEmpty(text)) {
       return null;
     }
-    try {
-      return new StringEntity(text);
-    } catch (UnsupportedEncodingException unsupportedEncodingFailure) {
-      unsupportedEncodingFailure.printStackTrace();
-    }
-    return null;
+    return new StringEntity(text, Charsets.UTF_8);
   }
 
   private boolean isNullOrEmpty(String text) {
