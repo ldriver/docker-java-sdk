@@ -21,7 +21,7 @@ public final class MessageReader {
     GeneratedMessage.Builder builder,
     Patterns patterns
   ) throws IOException {
-    if (isNullOrInitialized(builder)) {
+    if (isNullOrNotInitialized(builder)) {
       return;
     }
     Collection<Pattern> patternCollection = patterns.patterns();
@@ -63,8 +63,8 @@ public final class MessageReader {
     return text;
   }
 
-  private boolean isNullOrInitialized(GeneratedMessage.Builder builder) {
-    return builder == null || builder.isInitialized();
+  private boolean isNullOrNotInitialized(GeneratedMessage.Builder builder) {
+    return builder == null || !builder.isInitialized();
   }
 
   private boolean isNullOrEmpty(Collection<Pattern> patterns) {
