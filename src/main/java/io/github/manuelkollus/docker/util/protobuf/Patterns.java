@@ -1,6 +1,5 @@
 package io.github.manuelkollus.docker.util.protobuf;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +34,7 @@ public final class Patterns {
     }
 
     public Patterns create() {
-      return new Patterns(ImmutableList.copyOf(patterns));
+      return new Patterns(patterns);
     }
   }
 }

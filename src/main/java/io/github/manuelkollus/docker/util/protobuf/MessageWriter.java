@@ -1,5 +1,6 @@
 package io.github.manuelkollus.docker.util.protobuf;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.GeneratedMessage;
 import com.googlecode.protobuf.format.JsonFormat;
 import java.util.Collection;
@@ -18,7 +19,7 @@ public final class MessageWriter {
       return "";
     }
     Collection<Pattern> patternCollection = patterns.patterns();
-    if (isPatternsNull(patternCollection)) {
+    if (isNullOrImmutable(patternCollection)) {
       return writeMessageAndReplaceText(message, Collections.emptyList());
     }
     return writeMessageAndReplaceText(message, patternCollection);
@@ -42,8 +43,8 @@ public final class MessageWriter {
     return message == null || !message.isInitialized();
   }
 
-  private boolean isPatternsNull(Collection<Pattern> patterns) {
-    return patterns == null;
+  private boolean isNullOrImmutable(Collection<Pattern> patterns) {
+    return patterns == null || patterns instanceof ImmutableList;
   }
 
   public static MessageWriter create(JsonFormat format) {
