@@ -1,11 +1,11 @@
 package io.github.manuelkollus.docker.util.protobuf;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.GeneratedMessage;
 import com.googlecode.protobuf.format.JsonFormat;
 import com.googlecode.protobuf.format.JsonFormat.ParseException;
 import io.github.manuelkollus.docker.util.StringEncodings;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
@@ -20,13 +20,12 @@ public final class MessageReader {
     InputStream inputStream,
     GeneratedMessage.Builder builder,
     Patterns patterns
-  ) throws IOException {
+  ) {
     if (isNullOrNotInitialized(builder)) {
       return;
     }
     Collection<Pattern> patternCollection = patterns.patterns();
-    if (isNullOrEmpty(patternCollection)) {
-      format.merge(inputStream, builder);
+    if (isNullOrImmutable(patternCollection)) {
       return;
     }
     tryReadMessage(inputStream, builder, patternCollection);
@@ -67,8 +66,8 @@ public final class MessageReader {
     return builder == null || !builder.isInitialized();
   }
 
-  private boolean isNullOrEmpty(Collection<Pattern> patterns) {
-    return patterns == null || patterns.isEmpty();
+  private boolean isNullOrImmutable(Collection<Pattern> patterns) {
+    return patterns == null || patterns instanceof ImmutableList;
   }
 
   public static MessageReader create(JsonFormat format) {

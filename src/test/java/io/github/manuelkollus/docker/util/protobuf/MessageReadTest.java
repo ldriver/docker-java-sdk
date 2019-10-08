@@ -6,7 +6,6 @@ import com.google.inject.Injector;
 import io.github.manuelkollus.docker.DockerConfig;
 import io.github.manuelkollus.docker.InjectModule;
 import io.github.manuelkollus.docker.swarm.Version;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -32,12 +31,8 @@ public final class MessageReadTest {
     Patterns patterns
   ) {
     Injector injector = createInjector();
-    MessageReader reader = injector.getInstance(MessageReader.class);
-    try {
-      reader.readMessage(inputStream, builder, patterns);
-    } catch (IOException messageReadFailure) {
-      messageReadFailure.printStackTrace();
-    }
+    MessageReader messageReader = injector.getInstance(MessageReader.class);
+    messageReader.readMessage(inputStream, builder, patterns);
     Version version = builder.build();
     Assert.assertEquals(version.getIndex(), 1);
   }
