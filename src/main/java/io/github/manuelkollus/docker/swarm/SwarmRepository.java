@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 
 public final class SwarmRepository {
   private KeyPath path;
-  private Patterns patterns;
   private Executor executor;
+  private Patterns patterns;
   private HttpClients client;
   private MessageReader reader;
 
@@ -29,31 +29,31 @@ public final class SwarmRepository {
     @Named("Swarm") PatternsFactory factory
   ) {
     this.path = path.subPath("swarm");
-    this.patterns = factory.createPatterns();
     this.executor = executor;
+    this.patterns = factory.createPatterns();
     this.client = client;
     this.reader = reader;
   }
 
-  public CompletableFuture<String> initializeSwarm(SwarmInit swarmInit) {
+  public CompletableFuture<String> initializeSwarm(SwarmInitRequest request) {
     CompletableFuture<String> future = new CompletableFuture<>();
-    executor.execute(() -> initializeAndComplete(swarmInit, future));
+    executor.execute(() -> initializeAndComplete(request, future));
     return future;
   }
 
   private void initializeAndComplete(
-    SwarmInit swarmInit, CompletableFuture<String> future) {
-    Response response = initializeBlocking(swarmInit);
+    SwarmInitRequest request, CompletableFuture<String> future) {
+    Response response = initializeBlocking(request);
     checkInitialRequestStatusCode(response, future);
     String content = StringEncodings.encodeUtf8(response.content());
     future.complete(content);
   }
 
-  private Response initializeBlocking(SwarmInit swarmInit) {
+  private Response initializeBlocking(SwarmInitRequest request) {
     KeyPath path = this.path.subPath("init");
     return client.post(
       path,
-      swarmInit,
+      request,
       patterns
     );
   }
