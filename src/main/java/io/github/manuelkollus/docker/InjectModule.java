@@ -3,10 +3,13 @@ package io.github.manuelkollus.docker;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import com.googlecode.protobuf.format.JsonFormat;
+import io.github.manuelkollus.docker.swarm.SwarmPatternsFactory;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.protobuf.MessageReader;
 import io.github.manuelkollus.docker.util.protobuf.MessageWriter;
+import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -28,6 +31,9 @@ public final class InjectModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(DockerConfig.class).toInstance(config);
+    bind(PatternsFactory.class)
+      .annotatedWith(Names.named("Swarm"))
+      .toInstance(SwarmPatternsFactory.create());
   }
 
   private static final int GLOBAL_FALLBACK_EXECUTOR_SIZE = 2;

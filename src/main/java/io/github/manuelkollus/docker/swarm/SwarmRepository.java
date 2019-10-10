@@ -1,19 +1,21 @@
 package io.github.manuelkollus.docker.swarm;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.StringEncodings;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.MessageReader;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
-import java.io.InputStream;
+import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 
 public final class SwarmRepository {
   private KeyPath path;
+  private Patterns patterns;
   private Executor executor;
   private HttpClients client;
   private MessageReader reader;
@@ -23,9 +25,11 @@ public final class SwarmRepository {
     KeyPath path,
     Executor executor,
     HttpClients client,
-    MessageReader reader
+    MessageReader reader,
+    @Named("Swarm") PatternsFactory factory
   ) {
     this.path = path.subPath("swarm");
+    this.patterns = factory.createPatterns();
     this.executor = executor;
     this.client = client;
     this.reader = reader;
@@ -50,7 +54,7 @@ public final class SwarmRepository {
     return client.post(
       path,
       swarmInit,
-      Patterns.newBuilder().create()
+      patterns
     );
   }
 
@@ -70,18 +74,18 @@ public final class SwarmRepository {
   }
 
   private void inspectAndComplete(CompletableFuture<Swarm> future) {
-    Response response = client.get(path);
-    Swarm swarm = inspectBlocking(response.content());
+    Swarm swarm = inspectBlocking();
     future.complete(swarm);
   }
 
   @Nullable
-  private Swarm inspectBlocking(InputStream content) {
+  private Swarm inspectBlocking() {
+    Response response = client.get(path);
     Swarm.Builder builder = Swarm.newBuilder();
     reader.readMessage(
-      content,
+      response.content(),
       builder,
-      Patterns.newBuilder().create()
+      patterns
     );
     return builder.build();
   }
