@@ -31,65 +31,68 @@ message SwarmSpec {
   Raft raft = 5;
   TaskDefaults task_defaults = 6;
   EncryptionConfig encryption_config = 7;
+}
 
-  // Dispatcher represents dispatcher configuration.
-  message Dispatcher {
-    // HeartbeatPeriod defines how often agent should send heartbeats to
-    // dispatcher.
-    int64 heartbeat_period = 1;
-  }
-  // Orchestration represents orchestration configuration.
-  message Orchestration {
-    // TaskHistoryRetentionLimit is the number of historic tasks to keep per instance or
-    // node. If negative, never remove completed or failed tasks.
-    int32 task_history_retention_limit = 1;
-  }
-  // CAConfig represents CA configuration.
-  message CAConfig {
-    // NodeCertExpiry is the duration certificates should be issued for
-    int64 node_cert_expiry = 1;
-  }
-  // Raft represents raft configuration.
-  message Raft {
-    // LogEntriesForSlowFollowers is the number of log entries to keep
-    // around to sync up slow followers after a snapshot is created.
-    int32 log_entries_for_slow_followers = 1;
-    // HeartbeatTick is the number of ticks between heartbeats. Every
-    // HeartbeatTick ticks, the leader will send a heartbeat to the
-    // followers.
-    //
-    // A tick currently defaults to one second, so these translate directly to
-    // seconds currently, but this is NOT guaranteed.
-    int32 heartbeat_tick = 2;
-    // SnapshotInterval is the number of log entries between snapshots.
-    int32 snapshot_interval = 3;
-    // ElectionTick is the number of ticks that a follower will wait for a message
-    // from the leader before becoming a candidate and starting an election.
-    // ElectionTick must be greater than HeartbeatTick.
-    //
-    // A tick currently defaults to one second, so these translate directly to
-    // seconds currently, but this is NOT guaranteed.
-    int32 election_tick = 4;
-  }
+// Dispatcher represents dispatcher configuration.
+message Dispatcher {
+  // HeartbeatPeriod defines how often agent should send heartbeats to
+  // dispatcher.
+  int64 heartbeat_period = 1;
+}
 
-  // TaskDefaults parameterize cluster-level task creation with default values.
-  message TaskDefaults {
-    // LogDriver selects the log driver to use for tasks created in the
-    // orchestrator if unspecified by a service.
-    //
-    // Updating this value will only have an affect on new tasks. Old tasks
-    // will continue use their previously configured log driver until
-    // recreated.
-    LogDriver log_driver = 1;
-  }
+// Orchestration represents orchestration configuration.
+message Orchestration {
+  // TaskHistoryRetentionLimit is the number of historic tasks to keep per instance or
+  // node. If negative, never remove completed or failed tasks.
+  int32 task_history_retention_limit = 1;
+}
 
-  // EncryptionConfig controls at-rest encryption of data and keys.
-  message EncryptionConfig {
-    // AutoLockManagers specifies whether or not managers TLS keys and raft data
-    // should be encrypted at rest in such a way that they must be unlocked
-    // before the manager node starts up again.
-    bool auto_lock_managers = 1;
-  }
+// CAConfig represents CA configuration.
+message CAConfig {
+  // NodeCertExpiry is the duration certificates should be issued for
+  int64 node_cert_expiry = 1;
+}
+
+// Raft represents raft configuration.
+message Raft {
+  // LogEntriesForSlowFollowers is the number of log entries to keep
+  // around to sync up slow followers after a snapshot is created.
+  int32 log_entries_for_slow_followers = 1;
+  // HeartbeatTick is the number of ticks between heartbeats. Every
+  // HeartbeatTick ticks, the leader will send a heartbeat to the
+  // followers.
+  //
+  // A tick currently defaults to one second, so these translate directly to
+  // seconds currently, but this is NOT guaranteed.
+  int32 heartbeat_tick = 2;
+  // SnapshotInterval is the number of log entries between snapshots.
+  int32 snapshot_interval = 3;
+  // ElectionTick is the number of ticks that a follower will wait for a message
+  // from the leader before becoming a candidate and starting an election.
+  // ElectionTick must be greater than HeartbeatTick.
+  //
+  // A tick currently defaults to one second, so these translate directly to
+  // seconds currently, but this is NOT guaranteed.
+  int32 election_tick = 4;
+}
+
+// TaskDefaults parameterize cluster-level task creation with default values.
+message TaskDefaults {
+  // LogDriver selects the log driver to use for tasks created in the
+  // orchestrator if unspecified by a service.
+  //
+  // Updating this value will only have an affect on new tasks. Old tasks
+  // will continue use their previously configured log driver until
+  // recreated.
+  LogDriver log_driver = 1;
+}
+
+// EncryptionConfig controls at-rest encryption of data and keys.
+message EncryptionConfig {
+  // AutoLockManagers specifies whether or not managers TLS keys and raft data
+  // should be encrypted at rest in such a way that they must be unlocked
+  // before the manager node starts up again.
+  bool auto_lock_managers = 1;
 }
 
 // Driver represents a driver (network, logging, secrets backend).
