@@ -37,7 +37,7 @@ compile 'io.github.manuelkollus:docker-java-sdk:1.0'
 Here are all of our dependencies listed which are used for the Docker Java SDK. The dependency's name will take you to the dependency's project page. The _"artifact id"_ will take you to the dependency's index on the [MavenRepository website](https://mvnrepository.com).
 
 - [Protobuf Java](https://developers.google.com/protocol-buffers/docs/javatutorial) ([com.google.protobuf:protobuf-java:3.10.0](https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java/3.10.0))
-- [Protobuf Java Format](https://code.google.com/archive/p/protobuf-java-format/) ([com.googlecode.protobuf-java-format:protobuf-java-format:1.4](https://mvnrepository.com/artifact/com.googlecode.protobuf-java-format/protobuf-java-format))
+- [Protobuf Java Format](https://code.google.com/archive/p/protobuf-java-format/) ([com.googlecode.protobuf-java-format:protobuf-java-format:1.4](https://mvnrepository.com/artifact/com.googlecode.protobuf-java-format/protobuf-java-format/1.4))
 - [Guava](https://github.com/google/guava) ([com.google.guava:guava:28.0-jre](https://mvnrepository.com/artifact/com.google.guava/guava/28.0-jre))
 - [Guice](https://github.com/google/guice) ([com.google.inject:guice:4.0](https://mvnrepository.com/artifact/com.google.inject/guice/4.0))
 - [HttpClient](http://hc.apache.org/httpcomponents-client-ga/index.html) ([org.apache.httpcomponents:httpclient:4.5.10](https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient/4.5.10))
