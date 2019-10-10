@@ -57,7 +57,7 @@ public final class MessageReader {
   private String replaceTextWithPatterns(
     String text, Collection<Pattern> patterns) {
     for (Pattern pattern : patterns) {
-      text = pattern.replace(text);
+      text = pattern.replace(text, PatternReplacementStrategy.VALUE);
     }
     return text;
   }

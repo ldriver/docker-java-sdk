@@ -16,7 +16,7 @@ public final class MessageReadTest {
 
   @Test
   public void testMessageReadConsistency() {
-    Pattern versionIndexPattern = Pattern.create("Index", "index");
+    Pattern versionIndexPattern = Pattern.create("index", "Index");
     Patterns versionPatterns = Patterns.newBuilder()
       .addPattern(versionIndexPattern)
       .create();

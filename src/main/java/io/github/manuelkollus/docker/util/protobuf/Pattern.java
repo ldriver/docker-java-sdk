@@ -13,8 +13,15 @@ public final class Pattern {
     return key;
   }
 
-  public String replace(String text) {
-    text = text.replace(key, value);
+  String replace(String text, PatternReplacementStrategy strategy) {
+    switch (strategy) {
+      case KEY:
+        text = text.replace(key, value);
+        break;
+      case VALUE:
+        text = text.replace(value, key);
+        break;
+    }
     return text;
   }
 
