@@ -7,8 +7,6 @@ import com.google.inject.name.Names;
 import com.googlecode.protobuf.format.JsonFormat;
 import io.github.manuelkollus.docker.swarm.SwarmPatternsFactory;
 import io.github.manuelkollus.docker.util.KeyPath;
-import io.github.manuelkollus.docker.util.protobuf.MessageReader;
-import io.github.manuelkollus.docker.util.protobuf.MessageWriter;
 import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -48,18 +46,6 @@ public final class InjectModule extends AbstractModule {
   @Singleton
   KeyPath createGlobalKeyPath() {
     return this.config.keyPath();
-  }
-
-  @Provides
-  @Singleton
-  MessageWriter createGlobalMessageWriter() {
-    return MessageWriter.create(format);
-  }
-
-  @Provides
-  @Singleton
-  MessageReader createGlobalMessageReader() {
-    return MessageReader.create(format);
   }
 
   @Provides

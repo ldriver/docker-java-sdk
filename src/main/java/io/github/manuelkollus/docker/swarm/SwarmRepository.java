@@ -6,7 +6,6 @@ import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.StringEncodings;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
-import io.github.manuelkollus.docker.util.protobuf.MessageReader;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import java.util.concurrent.CompletableFuture;
@@ -18,21 +17,18 @@ public final class SwarmRepository {
   private Executor executor;
   private Patterns patterns;
   private HttpClients client;
-  private MessageReader reader;
 
   @Inject
   private SwarmRepository(
     KeyPath path,
     Executor executor,
     HttpClients client,
-    MessageReader reader,
     @Named("Swarm") PatternsFactory factory
   ) {
     this.path = path.subPath("swarm");
     this.executor = executor;
     this.patterns = factory.createPatterns();
     this.client = client;
-    this.reader = reader;
   }
 
   public CompletableFuture<String> initializeSwarm(SwarmInitRequest request) {
@@ -82,11 +78,7 @@ public final class SwarmRepository {
   private Swarm inspectBlocking() {
     Response response = client.get(path);
     Swarm.Builder builder = Swarm.newBuilder();
-    reader.readMessage(
-      response.content(),
-      builder,
-      patterns
-    );
+    patterns.readMessage(response.content(), builder);
     return builder.build();
   }
 

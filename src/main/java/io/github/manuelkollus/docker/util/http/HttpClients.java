@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.protobuf.GeneratedMessage;
 import io.github.manuelkollus.docker.util.KeyPath;
-import io.github.manuelkollus.docker.util.protobuf.MessageWriter;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
@@ -18,18 +17,16 @@ import org.apache.http.entity.StringEntity;
 
 public final class HttpClients {
   private HttpClient client;
-  private MessageWriter writer;
 
   @Inject
-  private HttpClients(HttpClient client, MessageWriter writer) {
+  private HttpClients(HttpClient client) {
     this.client = client;
-    this.writer = writer;
   }
 
   public Response post(
     KeyPath path, GeneratedMessage message, Patterns patterns) {
-    String text = writer.writeGeneratedMessage(message, patterns);
     HttpPost postRequest = new HttpPost(path.value());
+    String text = patterns.write(message);
     StringEntity entity = tryEncodeStringToJsonEntity(text);
     postRequest.setEntity(entity);
     return tryExecuteRequest(client, postRequest);
