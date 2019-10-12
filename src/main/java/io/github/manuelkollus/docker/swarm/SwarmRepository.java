@@ -7,7 +7,6 @@ import io.github.manuelkollus.docker.util.StringEncodings;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
-import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
@@ -23,11 +22,11 @@ public final class SwarmRepository {
     KeyPath path,
     Executor executor,
     HttpClients client,
-    @Named("Swarm") PatternsFactory factory
+    @Named("Swarm") Patterns patterns
   ) {
     this.path = path.subPath("swarm");
     this.executor = executor;
-    this.patterns = factory.createPatterns();
+    this.patterns = patterns;
     this.client = client;
   }
 
@@ -39,28 +38,20 @@ public final class SwarmRepository {
 
   private void initializeAndComplete(
     SwarmInitRequest request, CompletableFuture<String> future) {
-    Response response = initializeBlocking(request);
-    checkInitialRequestStatusCode(response, future);
-    String content = StringEncodings.encodeUtf8(response.content());
+    String content = initializeBlocking(request);
     future.complete(content);
   }
 
-  private Response initializeBlocking(SwarmInitRequest request) {
+  @Nullable
+  private String initializeBlocking(SwarmInitRequest request) {
     KeyPath path = this.path.subPath("init");
-    return client.post(
-      path,
-      request,
-      patterns
+    Response response = client.post(
+      path, request, patterns
     );
-  }
-
-  private void checkInitialRequestStatusCode(
-    Response response, CompletableFuture<String> future) {
     if (isRequestFailed(response.code())) {
-      String errorMessage = "The initial request could not be executed the"
-        + " status code is " + response.code();
-      future.completeExceptionally(SwarmException.withMessage(errorMessage));
+      return null;
     }
+    return StringEncodings.encodeUtf8(response.content());
   }
 
   public CompletableFuture<Swarm> inspectSwarm() {

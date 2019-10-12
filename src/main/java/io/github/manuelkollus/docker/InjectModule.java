@@ -6,8 +6,9 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import com.googlecode.protobuf.format.JsonFormat;
 import io.github.manuelkollus.docker.swarm.SwarmPatternsFactory;
+import io.github.manuelkollus.docker.system.SystemPatternsFactory;
 import io.github.manuelkollus.docker.util.KeyPath;
-import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
+import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -29,9 +30,16 @@ public final class InjectModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(DockerConfig.class).toInstance(config);
-    bind(PatternsFactory.class)
+    configurePatterns();
+  }
+
+  private void configurePatterns() {
+    bind(Patterns.class)
       .annotatedWith(Names.named("Swarm"))
-      .toInstance(SwarmPatternsFactory.create());
+      .toInstance(SwarmPatternsFactory.create().createPatterns());
+    bind(Patterns.class)
+      .annotatedWith(Names.named("System"))
+      .toInstance(SystemPatternsFactory.create().createPatterns());
   }
 
   private static final int GLOBAL_FALLBACK_EXECUTOR_SIZE = 2;
