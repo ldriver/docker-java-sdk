@@ -42,7 +42,7 @@ public final class SystemRepository {
   private boolean accessibleBlocking() {
     KeyPath keyPath = path.subPath("_ping");
     Response response = client.get(keyPath);
-    if (isRequestFailed(SERVER_ERROR)) {
+    if (isRequestFailed(response.code())) {
       return false;
     }
     return validateAccessible(response);
