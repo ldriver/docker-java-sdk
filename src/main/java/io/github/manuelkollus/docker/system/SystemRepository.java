@@ -45,10 +45,10 @@ public final class SystemRepository {
     if (isRequestFailed(SERVER_ERROR)) {
       return false;
     }
-    return accessibleByContent(response);
+    return validateAccessible(response);
   }
 
-  private boolean accessibleByContent(Response response) {
+  private boolean validateAccessible(Response response) {
     String text = StringEncodings.encodeUtf8(response.content());
     return text.equals("OK");
   }
