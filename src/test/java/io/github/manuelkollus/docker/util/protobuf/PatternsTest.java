@@ -27,12 +27,8 @@ public final class PatternsTest {
       .addPattern("index", "Index")
       .create();
     InputStream inputStream = decodeString("{\"Index\": 1}");
-    testReadConsistency(inputStream, versionPatterns);
-  }
-
-  private void testReadConsistency(InputStream inputStream, Patterns patterns) {
     Version.Builder builder = Version.newBuilder();
-    patterns.readMessage(inputStream, builder);
+    versionPatterns.readMessage(inputStream, builder);
     Version version = builder.build();
     Assert.assertEquals(version.getIndex(), 1);
   }

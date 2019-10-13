@@ -5,7 +5,18 @@ package docker;
 option java_package = "io.github.manuelkollus.docker.system";
 option java_multiple_files = true;
 
-message Info {
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+  string server_address = 3;
+}
+
+message AuthResponse {
+  string status = 1;
+  string identity_token = 2;
+}
+
+message SystemInfo {
   string architecture = 1;
   string clusterStore = 2;
   string c_group_driver = 3;

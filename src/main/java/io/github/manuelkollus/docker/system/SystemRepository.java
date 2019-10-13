@@ -30,6 +30,61 @@ public final class SystemRepository {
     this.client = client;
   }
 
+  public CompletableFuture<AuthResponse> checkAuth(AuthRequest request) {
+    CompletableFuture<AuthResponse> future = new CompletableFuture<>();
+    executor.execute(() -> checkAuthAndComplete(request, future));
+    return future;
+  }
+
+  private void checkAuthAndComplete(
+    AuthRequest request, CompletableFuture<AuthResponse> future) {
+    AuthResponse response = checkAuthBlocking(request);
+    future.complete(response);
+  }
+
+  @Nullable
+  private AuthResponse checkAuthBlocking(AuthRequest request) {
+    KeyPath keyPath = path.subPath("auth");
+    Response response = client.post(keyPath, request, patterns);
+    if (isRequestFailed(response.code())) {
+      return null;
+    }
+    return mergeAuthResponse(response.content());
+  }
+
+  private AuthResponse mergeAuthResponse(InputStream inputStream) {
+    AuthResponse.Builder builder = AuthResponse.newBuilder();
+    patterns.readMessage(inputStream, builder);
+    return builder.build();
+  }
+
+  public CompletableFuture<SystemInfo> findSystemInfo() {
+    CompletableFuture<SystemInfo> future = new CompletableFuture<>();
+    executor.execute(() -> findSystemInfoAndComplete(future));
+    return future;
+  }
+
+  private void findSystemInfoAndComplete(CompletableFuture<SystemInfo> future) {
+    SystemInfo systemInfo = findSystemInfoBlocking();
+    future.complete(systemInfo);
+  }
+
+  @Nullable
+  private SystemInfo findSystemInfoBlocking() {
+    KeyPath keyPath = path.subPath("info");
+    Response response = client.get(keyPath);
+    if (isRequestFailed(response.code())) {
+      return null;
+    }
+    return mergeSystemInfo(response.content());
+  }
+
+  private SystemInfo mergeSystemInfo(InputStream inputStream) {
+    SystemInfo.Builder builder = SystemInfo.newBuilder();
+    patterns.readMessage(inputStream, builder);
+    return builder.build();
+  }
+
   public CompletableFuture<SystemVersion> findVersion() {
     CompletableFuture<SystemVersion> future = new CompletableFuture<>();
     executor.execute(() -> findVersionAndComplete(future));

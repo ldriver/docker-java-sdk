@@ -9,10 +9,6 @@ public final class Pattern {
     this.value = value;
   }
 
-  public String key() {
-    return key;
-  }
-
   String replace(String text, PatternReplacementStrategy strategy) {
     switch (strategy) {
       case KEY:
