@@ -49,8 +49,15 @@ public final class SystemRepository {
   }
 
   private boolean validateAccessible(Response response) {
-    String text = StringEncodings.encodeUtf8(response.content());
-    return text.equals("OK");
+    String value = StringEncodings.encodeUtf8(response.content());
+    if (isNullOrEmpty(value)) {
+      return false;
+    }
+    return value.equals("OK");
+  }
+
+  private boolean isNullOrEmpty(String value) {
+    return value == null || value.isEmpty();
   }
 
   private static final int SERVER_ERROR = 500;
