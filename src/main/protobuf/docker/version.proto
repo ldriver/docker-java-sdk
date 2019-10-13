@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option java_package = "io.github.manuelkollus.docker";
+option java_multiple_files = true;
+
+package docker;
+
+// Version represents the internal object version.
+message Version {
+  int32 index = 1;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "io.github.manuelkollus.docker";
+option java_multiple_files = true;
+
+package docker;
+
+// TLSInfo represents the TLS information about what CA certificate is trusted,
+// and who the issuer for a TLS certificate is
+message TLSInfo {
+  // TrustRoot is the trusted CA root certificate in PEM format
+  string trust_root = 1;
+  // CertIssuer is the raw subject bytes of the issuer
+  string cert_issuer_subject = 2;
+  // CertIssuerPublicKey is the raw public key bytes of the issuer
+  string cert_issuer_public_key = 3;
+}
