@@ -5,6 +5,7 @@ import com.google.protobuf.GeneratedMessage;
 import com.googlecode.protobuf.format.JsonFormat;
 import com.googlecode.protobuf.format.JsonFormat.ParseException;
 import io.github.manuelkollus.docker.util.StringEncodings;
+import io.github.manuelkollus.docker.util.Strings;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +75,19 @@ public final class Patterns {
       this.patterns = patterns;
     }
 
-    public Builder addPattern(Pattern pattern) {
+    private Builder addPattern(Pattern pattern) {
       Objects.requireNonNull(pattern);
       this.patterns.add(pattern);
       return this;
+    }
+
+    public Builder addPattern(String value) {
+      return addPattern(value, Strings.capitalize(value));
+    }
+
+    public Builder addPattern(String key, String value) {
+      Pattern pattern = Pattern.create(key, value);
+      return addPattern(pattern);
     }
 
     public Patterns create() {

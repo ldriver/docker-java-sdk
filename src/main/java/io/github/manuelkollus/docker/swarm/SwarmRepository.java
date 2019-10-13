@@ -7,6 +7,7 @@ import io.github.manuelkollus.docker.util.StringEncodings;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
@@ -44,8 +45,8 @@ public final class SwarmRepository {
 
   @Nullable
   private String initializeBlocking(SwarmInitRequest request) {
-    KeyPath path = this.path.subPath("init");
-    Response response = client.post(path, request, patterns);
+    KeyPath keyPath = path.subPath("init");
+    Response response = client.post(keyPath, request, patterns);
     if (isRequestFailed(response.code())) {
       return null;
     }
@@ -66,8 +67,15 @@ public final class SwarmRepository {
   @Nullable
   private Swarm inspectBlocking() {
     Response response = client.get(path);
+    if (isRequestFailed(response.code())) {
+      return null;
+    }
+    return mergeSwarm(response.content());
+  }
+
+  private Swarm mergeSwarm(InputStream inputStream) {
     Swarm.Builder builder = Swarm.newBuilder();
-    patterns.readMessage(response.content(), builder);
+    patterns.readMessage(inputStream, builder);
     return builder.build();
   }
 

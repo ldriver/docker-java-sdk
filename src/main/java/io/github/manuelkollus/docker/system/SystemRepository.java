@@ -7,8 +7,10 @@ import io.github.manuelkollus.docker.util.StringEncodings;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import javax.annotation.Nullable;
 
 public final class SystemRepository {
   private KeyPath path;
@@ -26,6 +28,33 @@ public final class SystemRepository {
     this.executor = executor;
     this.patterns = patterns;
     this.client = client;
+  }
+
+  public CompletableFuture<SystemVersion> findVersion() {
+    CompletableFuture<SystemVersion> future = new CompletableFuture<>();
+    executor.execute(() -> findVersionAndComplete(future));
+    return future;
+  }
+
+  private void findVersionAndComplete(CompletableFuture<SystemVersion> future) {
+    SystemVersion version = findVersionBlocking();
+    future.complete(version);
+  }
+
+  @Nullable
+  private SystemVersion findVersionBlocking() {
+    KeyPath keyPath = path.subPath("version");
+    Response response = client.get(keyPath);
+    if (isRequestFailed(response.code())) {
+      return null;
+    }
+    return mergeVersion(response.content());
+  }
+
+  private SystemVersion mergeVersion(InputStream inputStream) {
+    SystemVersion.Builder builder = SystemVersion.newBuilder();
+    patterns.readMessage(inputStream, builder);
+    return builder.build();
   }
 
   public CompletableFuture<Boolean> accessible() {
