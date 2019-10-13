@@ -45,9 +45,7 @@ public final class SwarmRepository {
   @Nullable
   private String initializeBlocking(SwarmInitRequest request) {
     KeyPath path = this.path.subPath("init");
-    Response response = client.post(
-      path, request, patterns
-    );
+    Response response = client.post(path, request, patterns);
     if (isRequestFailed(response.code())) {
       return null;
     }
