@@ -14,9 +14,8 @@ public final class PatternsTest {
     Version version = Version.newBuilder()
       .setIndex(1)
       .build();
-    Pattern versionIndexPattern = Pattern.create("index", "Index");
     Patterns versionPatterns = Patterns.newBuilder()
-      .addPattern(versionIndexPattern)
+      .addPattern("index", "Index")
       .create();
     String text = versionPatterns.write(version);
     Assert.assertEquals(text, "{\"Index\": 1}");
@@ -24,9 +23,8 @@ public final class PatternsTest {
 
   @Test
   public void testReadConsistency() {
-    Pattern versionIndexPattern = Pattern.create("index", "Index");
     Patterns versionPatterns = Patterns.newBuilder()
-      .addPattern(versionIndexPattern)
+      .addPattern("index", "Index")
       .create();
     InputStream inputStream = decodeString("{\"Index\": 1}");
     testReadConsistency(inputStream, versionPatterns);
