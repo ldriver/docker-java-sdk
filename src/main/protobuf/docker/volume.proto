@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package docker;
+
+option java_package = "io.github.manuelkollus.docker.volume";
+option java_multiple_files = true;
+
+message Volumes {
+  repeated Volume volumes = 1;
+  repeated string warnings = 2;
+}
+
+message Volume {
+  string name = 1;
+  string driver = 2;
+  string mountpoint = 3;
+  map<string, string> labels = 4;
+  string scope = 5;
+  map<string, string> options = 6;
+}
+
+message VolumeCreateRequest {
+  string name = 1;
+  map<string, string> labels = 2;
+  string driver = 3;
+}
+
+message UnusedVolumesResponse {
+  repeated string volumes_deleted = 1;
+  int32 space_reclaimed = 2;
+}

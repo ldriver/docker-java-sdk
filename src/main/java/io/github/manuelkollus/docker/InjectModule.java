@@ -9,14 +9,17 @@ import io.github.manuelkollus.docker.swarm.SwarmPatternsFactory;
 import io.github.manuelkollus.docker.system.SystemPatternsFactory;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
-import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
+import io.github.manuelkollus.docker.volume.VolumePatternsFactory;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
+
+import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public final class InjectModule extends AbstractModule {
   private JsonFormat format;
@@ -34,12 +37,18 @@ public final class InjectModule extends AbstractModule {
   }
 
   private void configurePatterns() {
+    PatternsFactory swarmPatternsFactory = SwarmPatternsFactory.create();
+    addPattern(swarmPatternsFactory.createPatterns(), "Swarm");
+    PatternsFactory systemPatternsFactory = SystemPatternsFactory.create();
+    addPattern(systemPatternsFactory.createPatterns(), "System");
+    PatternsFactory volumePatternsFactory = VolumePatternsFactory.create();
+    addPattern(volumePatternsFactory.createPatterns(), "Volume");
+  }
+
+  private void addPattern(Patterns patterns, String name) {
     bind(Patterns.class)
-      .annotatedWith(Names.named("Swarm"))
-      .toInstance(SwarmPatternsFactory.create().createPatterns());
-    bind(Patterns.class)
-      .annotatedWith(Names.named("System"))
-      .toInstance(SystemPatternsFactory.create().createPatterns());
+      .annotatedWith(Names.named(name))
+      .toInstance(patterns);
   }
 
   private static final int GLOBAL_FALLBACK_EXECUTOR_SIZE = 2;
