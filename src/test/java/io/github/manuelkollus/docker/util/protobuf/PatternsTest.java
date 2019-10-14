@@ -1,7 +1,7 @@
 package io.github.manuelkollus.docker.util.protobuf;
 
 import com.google.common.base.Charsets;
-import io.github.manuelkollus.docker.swarm.Version;
+import io.github.manuelkollus.docker.Version;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;

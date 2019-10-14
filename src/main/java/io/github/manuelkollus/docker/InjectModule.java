@@ -4,30 +4,27 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import com.googlecode.protobuf.format.JsonFormat;
+import io.github.manuelkollus.docker.node.NodePatternsFactory;
 import io.github.manuelkollus.docker.swarm.SwarmPatternsFactory;
 import io.github.manuelkollus.docker.system.SystemPatternsFactory;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import io.github.manuelkollus.docker.util.protobuf.PatternsFactory;
 import io.github.manuelkollus.docker.volume.VolumePatternsFactory;
+import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 public final class InjectModule extends AbstractModule {
-  private JsonFormat format;
   private DockerConfig config;
 
   private InjectModule(DockerConfig config) {
     this.config = config;
-    this.format = new JsonFormat();
   }
 
   @Override
@@ -43,6 +40,8 @@ public final class InjectModule extends AbstractModule {
     addPattern(systemPatternsFactory.createPatterns(), "System");
     PatternsFactory volumePatternsFactory = VolumePatternsFactory.create();
     addPattern(volumePatternsFactory.createPatterns(), "Volume");
+    PatternsFactory nodePatternsFactory = NodePatternsFactory.create();
+    addPattern(nodePatternsFactory.createPatterns(), "Node");
   }
 
   private void addPattern(Patterns patterns, String name) {
