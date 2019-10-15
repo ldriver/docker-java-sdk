@@ -1,22 +1,24 @@
 package io.github.manuelkollus.docker.volume;
 
+import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import io.github.manuelkollus.docker.util.KeyPath;
 import io.github.manuelkollus.docker.util.http.HttpClients;
 import io.github.manuelkollus.docker.util.http.Response;
 import io.github.manuelkollus.docker.util.protobuf.Patterns;
-
-import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import javax.annotation.Nullable;
 
 public final class VolumeRepository {
+
   private KeyPath path;
   private Executor executor;
   private Patterns patterns;
   private HttpClients client;
 
+  @Inject
   private VolumeRepository(
     KeyPath path,
     Executor executor,
@@ -37,6 +39,13 @@ public final class VolumeRepository {
   private void createVolumeAndComplete(
     VolumeCreateRequest request, CompletableFuture<Volume> future) {
     Volume volume = createVolumeBlocking(request);
+    if (volume == null) {
+      String errorMessage = "The swarm could not be created from the servers, "
+        + "please check i the swarm already exists or if there"
+        + "are any server errors.";
+      future.completeExceptionally(VolumeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(volume);
   }
 
@@ -59,6 +68,13 @@ public final class VolumeRepository {
   private void inspectVolumeAndComplete(
     String name, CompletableFuture<Volume> future) {
     Volume volume = inspectVolumeBlocking(name);
+    if (volume == null) {
+      String errorMessage = "The swarm could not be inspected from the "
+        + "servers, please check if the name of the swarm exists or if there"
+        + "are any server errors.";
+      future.completeExceptionally(VolumeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(volume);
   }
 
@@ -106,6 +122,13 @@ public final class VolumeRepository {
   private void deleteUnusedVolumesAndComplete(
     CompletableFuture<UnusedVolumesResponse> future) {
     UnusedVolumesResponse response = deleteUnusedVolumesBlocking();
+    if (response == null) {
+      String errorMessage =
+        "The volumes could not be deleted from the servers, "
+          + "please check if the server has any errors.";
+      future.completeExceptionally(VolumeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(response);
   }
 
@@ -124,6 +147,7 @@ public final class VolumeRepository {
     patterns.readMessage(inputStream, builder);
     return builder.build();
   }
+
   public CompletableFuture<Volumes> findVolumes() {
     CompletableFuture<Volumes> future = new CompletableFuture<>();
     executor.execute(() -> findVolumesAndComplete(future));

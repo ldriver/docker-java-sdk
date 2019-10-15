@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 
 public final class SwarmRepository {
+
   private KeyPath path;
   private Executor executor;
   private Patterns patterns;
@@ -40,6 +41,13 @@ public final class SwarmRepository {
   private void initializeAndComplete(
     SwarmInitRequest request, CompletableFuture<String> future) {
     String content = initializeBlocking(request);
+    if (content == null) {
+      String errorMessage = "The swarm could not be initialized from the"
+        + " servers, please check if the name of the swarm exists or if there"
+        + "are any server errors.";
+      future.completeExceptionally(SwarmException.withMessage(errorMessage));
+      return;
+    }
     future.complete(content);
   }
 
@@ -61,6 +69,14 @@ public final class SwarmRepository {
 
   private void inspectAndComplete(CompletableFuture<Swarm> future) {
     Swarm swarm = inspectBlocking();
+    if (swarm == null) {
+      String errorMessage =
+        "The swarm could not be inspected from the servers, "
+          + "please check if the name of the swarm exists or if there"
+          + "are any server errors.";
+      future.completeExceptionally(SwarmException.withMessage(errorMessage));
+      return;
+    }
     future.complete(swarm);
   }
 

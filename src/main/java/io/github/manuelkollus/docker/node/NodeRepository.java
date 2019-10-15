@@ -21,7 +21,7 @@ public final class NodeRepository {
   private NodeRepository(
     KeyPath path,
     Executor executor,
-   @Named("Node") Patterns patterns,
+    @Named("Node") Patterns patterns,
     HttpClients client
   ) {
     this.path = path.subPath("nodes");
@@ -39,6 +39,13 @@ public final class NodeRepository {
   private void inspectNodeAndComplete(
     String nodeId, CompletableFuture<Node> future) {
     Node node = inspectNodeBlocking(nodeId);
+    if (node == null) {
+      String errorMessage = "The node could not be inspected from the servers, "
+        + "please check if the name of the node exists or if there"
+        + "are any server errors.";
+      future.completeExceptionally(NodeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(node);
   }
 
@@ -67,6 +74,13 @@ public final class NodeRepository {
   private void deleteNodeAndComplete(
     String name, CompletableFuture<Boolean> future) {
     Boolean removed = deleteNodeBlocking(name);
+    if (removed == null) {
+      String errorMessage = "The node could not be deleted from the servers, "
+        + "please check if the name of the node exists or if there"
+        + "are any server errors.";
+      future.completeExceptionally(NodeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(removed);
   }
 
@@ -84,6 +98,12 @@ public final class NodeRepository {
 
   private void findNodesAndComplete(CompletableFuture<Nodes> future) {
     Nodes nodes = findNodesBlocking();
+    if (nodes == null) {
+      String errorMessage = "No nodes could be found from the servers, please"
+        + " check if there should be internal server errors.";
+      future.completeExceptionally(NodeException.withMessage(errorMessage));
+      return;
+    }
     future.complete(nodes);
   }
 

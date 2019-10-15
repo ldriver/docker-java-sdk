@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 
 public final class SystemRepository {
+
   private KeyPath path;
   private Executor executor;
   private Patterns patterns;
@@ -39,6 +40,12 @@ public final class SystemRepository {
   private void checkAuthAndComplete(
     AuthRequest request, CompletableFuture<AuthResponse> future) {
     AuthResponse response = checkAuthBlocking(request);
+    if (response == null) {
+      String errorMessage = "The authentication could not be checked from the"
+        + " servers, please check if the has server errors.";
+      future.completeExceptionally(SystemException.withMessage(errorMessage));
+      return;
+    }
     future.complete(response);
   }
 
@@ -93,6 +100,12 @@ public final class SystemRepository {
 
   private void findVersionAndComplete(CompletableFuture<SystemVersion> future) {
     SystemVersion version = findVersionBlocking();
+    if (version == null) {
+      String errorMessage = "The SystemInfo could not be found from the"
+        + " servers, please check if the has server errors.";
+      future.completeExceptionally(SystemException.withMessage(errorMessage));
+      return;
+    }
     future.complete(version);
   }
 
