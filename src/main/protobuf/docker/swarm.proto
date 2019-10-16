@@ -6,7 +6,6 @@ option java_package = "io.github.manuelkollus.docker.swarm";
 option java_multiple_files = true;
 
 import "docker/version.proto";
-import "docker/tls_info.proto";
 
 message Swarm {
   string id = 1;
@@ -15,7 +14,7 @@ message Swarm {
   SwarmSpec spec = 4;
   JoinTokens join_tokens = 5;
   Version version = 6;
-  TLSInfo tls_info = 7;
+  SwarmTLSInfo tls_info = 7;
   bool root_rotation_in_progress = 8;
 }
 
@@ -110,4 +109,15 @@ message JoinTokens {
   string worker = 1;
   // Manager is the join token managers may use to join the swarm.
   string manager = 2;
+}
+
+// TLSInfo represents the TLS information about what CA certificate is trusted,
+// and who the issuer for a TLS certificate is
+message SwarmTLSInfo {
+  // TrustRoot is the trusted CA root certificate in PEM format
+  string trust_root = 1;
+  // CertIssuer is the raw subject bytes of the issuer
+  string cert_issuer_subject = 2;
+  // CertIssuerPublicKey is the raw public key bytes of the issuer
+  string cert_issuer_public_key = 3;
 }
