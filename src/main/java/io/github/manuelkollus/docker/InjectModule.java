@@ -39,8 +39,6 @@ public final class InjectModule extends AbstractModule {
     addPattern(volumePatterns.createPatterns(), "Volume");
     PatternsFactory nodePatterns = NodePatternsFactory.create();
     addPattern(nodePatterns.createPatterns(), "Node");
-    PatternsFactory authPatterns = AuthenticationPatternsFactory.create();
-    addPattern(authPatterns.createPatterns(), "Authentication");
   }
 
   private void addPattern(Patterns patterns, String name) {
@@ -69,7 +67,6 @@ public final class InjectModule extends AbstractModule {
     return HttpClientBuilder.create()
       .build();
   }
-
 
   public static InjectModule of(DockerConfig config) {
     Objects.requireNonNull(config);

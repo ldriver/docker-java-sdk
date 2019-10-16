@@ -1,19 +1,23 @@
 package io.github.manuelkollus.docker;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.manuelkollus.docker.util.StringEncodings;
-import io.github.manuelkollus.docker.util.protobuf.Patterns;
 import java.util.Objects;
 
 public final class AuthenticationConfig {
+  @JsonProperty("username")
   private String name;
   private String password;
   private String email;
+  @JsonProperty("serveraddress")
   private String address;
+  @JsonIgnore
   private ObjectMapper objectMapper;
 
   private AuthenticationConfig() {}
@@ -31,10 +35,9 @@ public final class AuthenticationConfig {
     this.objectMapper = createObjectMapper();
   }
 
-  public String tryEncodeToBase64(Patterns patterns) {
+  public String tryEncodeToBase64() {
     try {
       String value = objectMapper.writeValueAsString(this);
-      value = patterns.replaceValue(value);
       return StringEncodings.encodeToBase64(value);
     } catch (JsonProcessingException writeValueFailure) {
       writeValueFailure.printStackTrace();

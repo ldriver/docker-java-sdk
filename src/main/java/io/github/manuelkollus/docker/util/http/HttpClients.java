@@ -2,7 +2,6 @@ package io.github.manuelkollus.docker.util.http;
 
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.google.protobuf.GeneratedMessage;
 import io.github.manuelkollus.docker.AuthenticationConfig;
 import io.github.manuelkollus.docker.util.KeyPath;
@@ -21,15 +20,11 @@ import org.apache.http.entity.StringEntity;
 public final class HttpClients {
   private HttpClient client;
   private AuthenticationConfig config;
-  private Patterns authenticationPattens;
 
   @Inject
-  private HttpClients(
-    HttpClient client,
-    AuthenticationConfig config,
-    @Named("Authentication") Patterns patterns
-  ) {
+  private HttpClients(HttpClient client, AuthenticationConfig config) {
     this.client = client;
+    this.config = config;
   }
 
   public Response post(
@@ -54,9 +49,7 @@ public final class HttpClients {
   }
 
   private Response tryExecuteRequest(HttpUriRequest request) {
-    request.addHeader(
-      "X-Registry-Auth",
-      config.tryEncodeToBase64(authenticationPattens));
+    request.addHeader("X-Registry-Auth", config.tryEncodeToBase64());
     try {
       HttpResponse response = client.execute(request);
       return tryBuildResponse(response);
