@@ -40,6 +40,7 @@ Here are all of our dependencies listed which are used for the Docker Java SDK. 
 - [Protobuf Java Format](https://code.google.com/archive/p/protobuf-java-format/) ([com.googlecode.protobuf-java-format:protobuf-java-format:1.4](https://mvnrepository.com/artifact/com.googlecode.protobuf-java-format/protobuf-java-format/1.4))
 - [Guava](https://github.com/google/guava) ([com.google.guava:guava:28.0-jre](https://mvnrepository.com/artifact/com.google.guava/guava/28.0-jre))
 - [Guice](https://github.com/google/guice) ([com.google.inject:guice:4.0](https://mvnrepository.com/artifact/com.google.inject/guice/4.0))
+- [Jackson Databind](https://github.com/FasterXML/jackson-databind) ([com.fasterxml.jackson.core:jackson-databind:2.10.0](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.10.0))
 - [HttpClient](http://hc.apache.org/httpcomponents-client-ga/index.html) ([org.apache.httpcomponents:httpclient:4.5.10](https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient/4.5.10))
 - [Commons IO](http://commons.apache.org/proper/commons-io/) ([commons-io:commons-io:2.6](https://mvnrepository.com/artifact/commons-io/commons-io/2.6))
 - [JUnit4](https://junit.org/junit4/) ([junit:junit:4.12](https://mvnrepository.com/artifact/junit/junit/4.12))
