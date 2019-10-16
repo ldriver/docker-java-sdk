@@ -25,14 +25,7 @@ public final class Patterns {
       return "";
     }
     String text = format.printToString(message);
-    return replaceText(text);
-  }
-
-  private String replaceText(String text) {
-    for (Pattern pattern : patterns) {
-      text = pattern.replace(text, PatternReplacementStrategy.KEY);
-    }
-    return text;
+    return replaceValue(text);
   }
 
   private boolean isNullOrNotInitialized(GeneratedMessage message) {
