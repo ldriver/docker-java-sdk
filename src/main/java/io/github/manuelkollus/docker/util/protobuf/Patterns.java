@@ -60,6 +60,13 @@ public final class Patterns {
     return text;
   }
 
+  public String replaceValue(String value) {
+    for (Pattern pattern : patterns) {
+      value = pattern.replace(value, PatternReplacementStrategy.KEY);
+    }
+    return value;
+  }
+
   private boolean isNullOrNotInitialized(GeneratedMessage.Builder builder) {
     return builder == null || !builder.isInitialized();
   }

@@ -3,26 +3,25 @@ package io.github.manuelkollus.docker;
 import io.github.manuelkollus.docker.util.DelimitedKeyPath;
 import io.github.manuelkollus.docker.util.KeyPath;
 import java.util.Objects;
-import org.apache.http.auth.UsernamePasswordCredentials;
 
 public final class DockerConfig {
   private KeyPath keyPath;
-  private UsernamePasswordCredentials credentials;
+  private AuthenticationConfig authentication;
 
   private DockerConfig() {}
 
   private DockerConfig(
-    KeyPath keyPath, UsernamePasswordCredentials credentials) {
+    KeyPath keyPath, AuthenticationConfig authentication) {
     this.keyPath = keyPath;
-    this.credentials = credentials;
+    this.authentication = authentication;
   }
 
   public KeyPath keyPath() {
     return this.keyPath;
   }
 
-  public UsernamePasswordCredentials credentials() {
-    return this.credentials;
+  public AuthenticationConfig authentication() {
+    return this.authentication;
   }
 
   public static DockerConfig.Builder newBuilder() {
@@ -42,16 +41,16 @@ public final class DockerConfig {
       return this;
     }
 
-    public Builder withCredentials(UsernamePasswordCredentials credentials) {
-      Objects.requireNonNull(credentials);
-      this.prototype.credentials = credentials;
+    public Builder withAuthentication(AuthenticationConfig authentication) {
+      Objects.requireNonNull(authentication);
+      this.prototype.authentication = authentication;
       return this;
     }
 
     public DockerConfig create() {
       return new DockerConfig(
         prototype.keyPath,
-        prototype.credentials
+        prototype.authentication
       );
     }
   }

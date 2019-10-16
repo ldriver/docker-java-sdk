@@ -14,10 +14,7 @@ import io.github.manuelkollus.docker.volume.VolumePatternsFactory;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 public final class InjectModule extends AbstractModule {
@@ -34,14 +31,16 @@ public final class InjectModule extends AbstractModule {
   }
 
   private void configurePatterns() {
-    PatternsFactory swarmPatternsFactory = SwarmPatternsFactory.create();
-    addPattern(swarmPatternsFactory.createPatterns(), "Swarm");
-    PatternsFactory systemPatternsFactory = SystemPatternsFactory.create();
-    addPattern(systemPatternsFactory.createPatterns(), "System");
-    PatternsFactory volumePatternsFactory = VolumePatternsFactory.create();
-    addPattern(volumePatternsFactory.createPatterns(), "Volume");
-    PatternsFactory nodePatternsFactory = NodePatternsFactory.create();
-    addPattern(nodePatternsFactory.createPatterns(), "Node");
+    PatternsFactory swarmPatterns = SwarmPatternsFactory.create();
+    addPattern(swarmPatterns.createPatterns(), "Swarm");
+    PatternsFactory systemPatterns = SystemPatternsFactory.create();
+    addPattern(systemPatterns.createPatterns(), "System");
+    PatternsFactory volumePatterns = VolumePatternsFactory.create();
+    addPattern(volumePatterns.createPatterns(), "Volume");
+    PatternsFactory nodePatterns = NodePatternsFactory.create();
+    addPattern(nodePatterns.createPatterns(), "Node");
+    PatternsFactory authPatterns = AuthenticationPatternsFactory.create();
+    addPattern(authPatterns.createPatterns(), "Authentication");
   }
 
   private void addPattern(Patterns patterns, String name) {
@@ -68,15 +67,9 @@ public final class InjectModule extends AbstractModule {
   @Singleton
   public HttpClient createGlobalHttpClient() {
     return HttpClientBuilder.create()
-      .setDefaultCredentialsProvider(authHttpClient())
       .build();
   }
 
-  private CredentialsProvider authHttpClient() {
-    CredentialsProvider provider = new BasicCredentialsProvider();
-    provider.setCredentials(AuthScope.ANY, config.credentials());
-    return provider;
-  }
 
   public static InjectModule of(DockerConfig config) {
     Objects.requireNonNull(config);

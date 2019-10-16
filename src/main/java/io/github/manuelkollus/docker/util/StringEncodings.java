@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Base64;
 
 public final class StringEncodings {
-  private StringEncodings() {
-  }
+  private StringEncodings() {}
 
   public static byte[] encodeUtf8(String value) {
     return value.getBytes(Charsets.UTF_8);
@@ -27,5 +27,12 @@ public final class StringEncodings {
       convertFailure.printStackTrace();
     }
     return null;
+  }
+
+  private static final Base64.Encoder ENCODER = Base64.getEncoder();
+
+  public static String encodeToBase64(String value) {
+    byte[] bytes = encodeUtf8(value);
+    return ENCODER.encodeToString(bytes);
   }
 }
